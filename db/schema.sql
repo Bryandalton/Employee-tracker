@@ -19,7 +19,7 @@ CREATE TABLE role (
 );
 
 CREATE TABLE employee (
-    id int primary key,
+    id int primary key AUTO_INCREMENT,
     first_name varchar(30),
     last_name varchar(30),
     role_id int
