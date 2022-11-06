@@ -1,7 +1,15 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2')
 const consoleTable = require('console.table')
-
+const db = mysql.createConnection(
+    {
+      host: 'localhost',
+      user: 'root',
+      password: '',
+      database: 'employee_db'
+    },
+    console.log(`Connected to the employee_db database.`)
+  );
 
 const menuPromt = () => {
     const menu = {
@@ -26,7 +34,7 @@ const menuPromt = () => {
             viewEmployees();
             menuPromt();
             break;
-        case 'Add emloyee' :
+        case 'Add emloyee':
             addEmployee();
             menuPromt();
             break;
@@ -55,12 +63,21 @@ const menuPromt = () => {
     })
 };
 
-const viewEmployees = () => {console.log('All Employees')};
+const viewEmployees = () => {
+    console.log('All Employees')
+    db.query('select * from employee', (err, results) => console.log(results));
+};
 const addEmployee = () => {console.log('employee added')};
 const updateRole = () => {console.log('role updated')};
-const viewRoles = () => {console.log('All Roles')};
+const viewRoles = () => {
+    console.log('All Roles')
+    db.query('select * from role', (err, results) => console.log(results));
+};
 const addRole = () => {console.log('role added')};
-const viewDepartments = () => {console.log('All Deparments')};
+const viewDepartments = () => {
+    console.log('All Deparments')
+    db.query('select * from department', (err, results) => console.log(results));
+};
 const addDepartment = () => {console.log('department added')};
 
-menuPromt()
+menuPromt();

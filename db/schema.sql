@@ -4,12 +4,12 @@ create DATABASE employee_db;
 use employee_db
 
 CREATE TABLE deparment (
-id int not null primary key,
+id int not null primary key AUTO_INCREMENT,
 name varchar(30),
 );
 
 CREATE TABLE role (
-    id int primary key,
+    id int primary key AUTO_INCREMENT,
     title varchar(30),
     salary decimal,
     deparment_id int,
