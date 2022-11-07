@@ -4,8 +4,8 @@ CREATE DATABASE employee_db;
 USE employee_db;
 
 CREATE TABLE deparment (
-id int not null primary key AUTO_INCREMENT,
-name varchar(30),
+id int not null AUTO_INCREMENT primary key ,
+name varchar(30)
 );
 
 CREATE TABLE role (
@@ -23,11 +23,9 @@ CREATE TABLE employee (
     first_name varchar(30),
     last_name varchar(30),
     role_id INT,
-    manager_id int,
+    manager_id int DEFAULT NULL,
     FOREIGN KEY (role_id)
     REFERENCES role(id)
-    ON DELETE SET NULL,
-    FOREIGN KEY (manager_id)
-    REFERENCES employee(id)
     ON DELETE SET NULL
+    /*Self refferential tables?*/
 );

@@ -67,17 +67,52 @@ const viewEmployees = () => {
     console.log('All Employees')
     db.query('select * from employee', (err, results) => console.log(results));
 };
-const addEmployee = () => {console.log('employee added')};
+const addEmployee = () => {
+    console.log('employee added')
+};
 const updateRole = () => {console.log('role updated')};
 const viewRoles = () => {
     console.log('All Roles')
     db.query('select * from role', (err, results) => console.log(results));
 };
-const addRole = () => {console.log('role added')};
+const addRole = () => {
+    const rolePrompt = [{
+        type: 'input',
+        name: 'role',
+        message: 'Role name: '
+    },
+    {
+        type: 'number',
+        name: 'salary',
+        message: 'Role salary: '
+    },
+    {
+        type: 'number',
+        name: 'department_id',
+        message: 'Department id: '
+    }];
+    inquirer.prompt(rolePrompt)
+    .then(({role, salary, department_id}) => {
+        db.query(`INSERT INTO role (title, salary, department_id)
+        VALUES (${role},${salary},${department_id});`,(err, results) => {console.log(results)})
+    })
+    console.log('role added')
+};
 const viewDepartments = () => {
     console.log('All Deparments')
     db.query('select * from department', (err, results) => console.log(results));
 };
-const addDepartment = () => {console.log('department added')};
+const addDepartment = () => {
+    const departmentPrompt = {
+        type: 'input',
+        name: 'department',
+        message: 'New department name: '
+    }
+    inquirer.prompt(departmentPrompt)
+    .then(({department}) => {
+        db.query(`INSERT INTO deparment (name)
+        VALUES (${department});`)
+    })
+    console.log('department added')};
 
 menuPromt();
