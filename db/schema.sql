@@ -23,10 +23,10 @@ CREATE TABLE employee (
     first_name varchar(30),
     last_name varchar(30),
     role_id INT,
+    manager_id int,
     FOREIGN KEY (role_id)
     REFERENCES role(id)
     ON DELETE SET NULL,
-    manager_id int,
     FOREIGN KEY (manager_id)
     REFERENCES employee(id)
     ON DELETE SET NULL
