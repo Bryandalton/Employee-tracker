@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2')
-const consoleTable = require('console.table')
+require('console.table')
 const db = mysql.createConnection(
     {
       host: 'localhost',
@@ -11,69 +11,100 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee_db database.`)
   );
 
-const menuPromt = () => {
+const menuPrompt = () => {
     const menu = {
         type: 'list',
         name: 'menu',
         message: 'What would you like to do?',
         choices: [
                 'View all employees',
-                'Add emloyee',
+                'Add employee',
                 'View all departments',
                 'Add a Department',
                 'View all Roles',
                 'Add a Role', 
-                'Update employee role'
+                'Update employee role' 
             ]
-    }
+    };
     inquirer.prompt(menu)
     .then(({menu}) => {
         // console.log(menu)
        switch (menu) {
         case 'View all employees': 
             viewEmployees();
-            menuPromt();
+            menuPrompt();
             break;
-        case 'Add emloyee':
+        case 'Add employee':
             addEmployee();
-            menuPromt();
+            // menuPrompt();
             break;
             
         case 'View all departments':
             viewDepartments();
-            menuPromt();
+            menuPrompt();
             break;
         case 'Add a Department':
             addDepartment();
-            menuPromt();
+            // menuPrompt();
             break;
         case 'View all Roles':
             viewRoles();
-            menuPromt();
+            menuPrompt();
             break;
         case 'Add a Role':
             addRole();
-            menuPromt();
+            // menuPrompt();
             break;
         case 'Update employee role':
             updateRole();
-            menuPromt();
+            // menuPrompt();
             break;
        }
     })
 };
 
 const viewEmployees = () => {
-    console.log('All Employees')
-    db.query('select * from employee', (err, results) => console.log(results));
+    db.query('select * from employee', (err, results) => {
+        console.log('\n')
+        console.table(results)
+    });
 };
 const addEmployee = () => {
-    console.log('employee added')
+    const employeePrompt = [{
+        type: 'input',
+        name: 'first_Name',
+        message: 'Employee first name: '
+    },
+    {
+        type: 'input',
+        name: 'last_Name',
+        message: 'Employee last name: '
+    },
+    {
+        type: 'number',
+        name: 'role_Id',
+        message: 'Role Id: '
+    },
+    {
+        type: 'number',
+        name: 'manager_Id',
+        message: 'Manager\'s id: '
+    }
+];
+    inquirer.prompt(employeePrompt)
+    .then(({first_Name, last_Name, role_Id, manager_Id}) => {
+        db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id)
+        VALUES (${first_Name}, ${last_Name}, ${role_Id}, ${manager_Id});`, (err, results) => console.log(results));
+        menuPrompt();
+    })
 };
 const updateRole = () => {console.log('role updated')};
 const viewRoles = () => {
     console.log('All Roles')
-    db.query('select * from role', (err, results) => console.log(results));
+    db.query('select * from role', (err, results) => {
+        console.log('\n')
+        console.table(results)
+    });
 };
 const addRole = () => {
     const rolePrompt = [{
@@ -95,12 +126,15 @@ const addRole = () => {
     .then(({role, salary, department_id}) => {
         db.query(`INSERT INTO role (title, salary, department_id)
         VALUES (${role},${salary},${department_id});`,(err, results) => {console.log(results)})
+        menuPrompt();
     })
     console.log('role added')
 };
 const viewDepartments = () => {
-    console.log('All Deparments')
-    db.query('select * from department', (err, results) => console.log(results));
+    db.query('select * from department',(err, results) => {
+        console.log('\n')
+        console.table(results)
+    });
 };
 const addDepartment = () => {
     const departmentPrompt = {
@@ -110,9 +144,10 @@ const addDepartment = () => {
     }
     inquirer.prompt(departmentPrompt)
     .then(({department}) => {
-        db.query(`INSERT INTO deparment (name)
+        db.query(`INSERT INTO department (name)
         VALUES (${department});`)
+        menuPrompt();
     })
-    console.log('department added')};
+};
 
-menuPromt();
+menuPrompt();

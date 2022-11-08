@@ -3,7 +3,7 @@ CREATE DATABASE employee_db;
 
 USE employee_db;
 
-CREATE TABLE deparment (
+CREATE TABLE department (
 id int not null AUTO_INCREMENT primary key ,
 name varchar(30)
 );
@@ -12,9 +12,9 @@ CREATE TABLE role (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title varchar(30),
     salary decimal,
-    deparment_id INT,
-    FOREIGN KEY (deparment_id)
-    REFERENCES deparment(id)
+    department_id INT,
+    FOREIGN KEY (department_id)
+    REFERENCES department(id)
     ON DELETE SET NULL
 );
 
