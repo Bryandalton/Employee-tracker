@@ -10,7 +10,8 @@ const db = mysql.createConnection(
     },
     console.log(`Connected to the employee_db database.`)
   );
-
+//not connecting to database on launch of app fix that
+//not adding data to database fix that
 const menuPrompt = () => {
     const menu = {
         type: 'list',
@@ -94,9 +95,14 @@ const addEmployee = () => {
     inquirer.prompt(employeePrompt)
     .then(({first_Name, last_Name, role_Id, manager_Id}) => {
         db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id)
-        VALUES (${first_Name}, ${last_Name}, ${role_Id}, ${manager_Id});`, (err, results) => console.log(results));
+        VALUES ("${first_Name}", "${last_Name}", "${role_Id}", "${manager_Id}");`,(err, result) =>{
+            if (err) {
+                console.log(err);
+              }
+              console.log(result);
+        });
         menuPrompt();
-    })
+    });
 };
 const updateRole = () => {console.log('role updated')};
 const viewRoles = () => {
@@ -104,6 +110,7 @@ const viewRoles = () => {
     db.query('select * from role', (err, results) => {
         console.log('\n')
         console.table(results)
+        console.log('\n')
     });
 };
 const addRole = () => {
@@ -125,15 +132,20 @@ const addRole = () => {
     inquirer.prompt(rolePrompt)
     .then(({role, salary, department_id}) => {
         db.query(`INSERT INTO role (title, salary, department_id)
-        VALUES (${role},${salary},${department_id});`,(err, results) => {console.log(results)})
+        VALUES ("${role}","${salary}","${department_id}");`,(err, result) =>{
+            if (err) {
+                console.log(err);
+              }
+              console.log(result);})
         menuPrompt();
-    })
+    });
     console.log('role added')
 };
 const viewDepartments = () => {
     db.query('select * from department',(err, results) => {
         console.log('\n')
         console.table(results)
+        console.log('\n')
     });
 };
 const addDepartment = () => {
@@ -145,7 +157,11 @@ const addDepartment = () => {
     inquirer.prompt(departmentPrompt)
     .then(({department}) => {
         db.query(`INSERT INTO department (name)
-        VALUES (${department});`)
+        VALUES ("${department}");`,(err, result) =>{
+            if (err) {
+                console.log(err);
+              }
+              console.log(result);});
         menuPrompt();
     })
 };
