@@ -105,7 +105,7 @@ const addEmployee = () => {
               }
               console.log(result);
         })
-        .then(() => {menuPrompt()})
+        menuPrompt();
 
     })
 };
