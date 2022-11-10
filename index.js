@@ -10,8 +10,7 @@ const db = mysql.createConnection(
     },
     console.log(`Connected to the employee_db database.`)
   );
-//not connecting to database on launch of app fix that
-//not adding data to database fix that
+
 const menuPrompt = () => {
     const menu = {
         type: 'list',
@@ -24,7 +23,8 @@ const menuPrompt = () => {
                 'Add a Department',
                 'View all Roles',
                 'Add a Role', 
-                'Update employee role' 
+                'Update employee role',
+                'Quit'
             ]
     };
     inquirer.prompt(menu)
@@ -37,16 +37,13 @@ const menuPrompt = () => {
             break;
         case 'Add employee':
             addEmployee();
-            // menuPrompt();
             break;
-            
         case 'View all departments':
             viewDepartments();
             menuPrompt();
             break;
         case 'Add a Department':
             addDepartment();
-            // menuPrompt();
             break;
         case 'View all Roles':
             viewRoles();
@@ -54,20 +51,27 @@ const menuPrompt = () => {
             break;
         case 'Add a Role':
             addRole();
-            // menuPrompt();
             break;
         case 'Update employee role':
             updateRole();
-            // menuPrompt();
+            break;
+        case 'Quit':
+            process.exit(0);
             break;
        }
     })
 };
 
 const viewEmployees = () => {
-    db.query('select * from employee', (err, results) => {
-        console.log('\n')
-        console.table(results)
+    db.query(
+    'SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, " ",manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;', (err, results) => {
+        if (err) {
+            console.log(err)
+        } else {
+        console.log('\n');
+        console.table(results);
+        console.log('\n');
+        }
     });
 };
 const addEmployee = () => {
@@ -100,14 +104,40 @@ const addEmployee = () => {
                 console.log(err);
               }
               console.log(result);
-        });
-        menuPrompt();
-    });
+        })
+        .then(() => {menuPrompt()})
+
+    })
 };
-const updateRole = () => {console.log('role updated')};
+const updateRole = () => {
+    const updatePrompt =  [{
+        type: 'number',
+        name: 'updatedEmployee',
+        message: 'Enter employee id of the employee you want to update: '
+    },
+    {
+        type: "number",
+        name: 'updatedRole',
+        message: 'New Role id: '
+    }]
+    inquirer.prompt(updatePrompt)
+    .then(({updatedEmployee, updatedRole}) => {
+        db.query(`
+        Update employee
+        SET role_id = ${updatedRole}
+        WHERE id = ${updatedEmployee};
+        `), (err, result) => { if (err) {
+            console.log(err);
+          }
+          console.log(result);}
+    
+    })
+    .then(() => {menuPrompt()})
+};
+
 const viewRoles = () => {
     console.log('All Roles')
-    db.query('select * from role', (err, results) => {
+    db.query('select role.id, title, salary, department.name as department from role join department on department_id = department.id;', (err, results) => {
         console.log('\n')
         console.table(results)
         console.log('\n')
@@ -132,14 +162,13 @@ const addRole = () => {
     inquirer.prompt(rolePrompt)
     .then(({role, salary, department_id}) => {
         db.query(`INSERT INTO role (title, salary, department_id)
-        VALUES ("${role}","${salary}","${department_id}");`,(err, result) =>{
+        VALUES ("${role}",${salary},"${department_id}");`,(err, result) =>{
             if (err) {
                 console.log(err);
               }
               console.log(result);})
-        menuPrompt();
-    });
-    console.log('role added')
+    })
+    .then(() => {menuPrompt()})
 };
 const viewDepartments = () => {
     db.query('select * from department',(err, results) => {
@@ -162,8 +191,8 @@ const addDepartment = () => {
                 console.log(err);
               }
               console.log(result);});
-        menuPrompt();
     })
+    .then(() => {menuPrompt()})
 };
 
 menuPrompt();
